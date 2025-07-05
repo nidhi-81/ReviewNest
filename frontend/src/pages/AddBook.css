@@ -1,0 +1,64 @@
+/* src/styles/AddBook.css */
+.add-book-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.add-book-container h2 {
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.add-book-container label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.add-book-container input,
+.add-book-container textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+.add-book-container button {
+  margin-top: 16px;
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-book-container button:hover {
+  background-color: #555;
+}
+
+.suggestions {
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  margin-top: 4px;
+  padding: 0;
+  list-style: none;
+  max-height: 150px;
+  overflow-y: auto;
+  border-radius: 4px;
+}
+
+.suggestions li {
+  padding: 8px 10px;
+  cursor: pointer;
+}
+
+.suggestions li:hover {
+  background: #e0e0e0;
+}
