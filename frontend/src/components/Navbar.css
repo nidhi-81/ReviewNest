@@ -1,21 +1,25 @@
 .navbar {
   background-color: #333;
   color: #fff;
-  padding: 12px 20px;
+  padding: 12px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .navbar-brand {
-  font-size: 20px;
+  font-size: 22px;
   font-weight: bold;
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.navbar-links {
+.navbar-right {
   display: flex;
-  gap: 15px;
+  align-items: center;
+  gap: 25px;
 }
 
 .navbar a,
@@ -26,14 +30,20 @@
   cursor: pointer;
   font-size: 16px;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
 .logout-btn:hover,
 .navbar a:hover {
   text-decoration: underline;
 }
+
 .welcome-text {
-  margin-right: 15px;
   font-weight: 500;
   color: #eee;
+}
+.logo-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
 }

@@ -24,19 +24,25 @@ export default function Navbar() {
 
   return (
     <nav className="navbar">
-      <div className="navbar-brand" onClick={() => navigate('/')}>📚 ReviewNest</div>
+        
+  <div className="navbar-brand" onClick={() => navigate('/')}>
+  <img src="../books.png" alt="logo" className="logo-icon" />
+  ReviewNest
+</div>
 
-      <div className="navbar-links">
-        {isAuthenticated() && <span className="welcome-text">Welcome, {userName} 👋</span>}
-        {isAuthenticated() ? (
-            <>
-    <Link to="/add-book" className="login-link">Add Book</Link>
-    <button onClick={handleLogout} className="logout-btn">Logout</button>
-  </>
-        ) : (
-          <Link to="/login" className="login-link">Login</Link>
-        )}
-      </div>
-    </nav>
+
+  <div className="navbar-right">
+    {isAuthenticated() && <span className="welcome-text">Welcome, {userName} 👋</span>}
+    {isAuthenticated() ? (
+      <>
+        <Link to="/add-book">Add Book</Link>
+        <button onClick={handleLogout} className="logout-btn">Logout</button>
+      </>
+    ) : (
+      <Link to="/login">Login</Link>
+    )}
+  </div>
+</nav>
+
   );
 }

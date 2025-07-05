@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
-
+import '../index.css'
 export default function BookCard({ book }) {
   return (
-    <div className="card">
+    <div className="book-card">
       <h2>{book.Title}</h2>
       <p><strong>Author:</strong> {book.Author}</p>
       <p>{book.Detail?.slice(0, 120)}...</p>

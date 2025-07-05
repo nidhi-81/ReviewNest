@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import BookCard from '../components/BookCard';
-
+import '../index.css'
 export default function Home() {
   const [books, setBooks] = useState([]);
 
@@ -15,13 +15,14 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="container">
-      <h1>📚 ReviewNest - Explore Novels</h1>
-      <div className="card-grid">
+   <div className="container">
+      <h1 className="fancy-heading"> ReviewNest - Explore Novels</h1>
+      <div className="books-grid">
         {books.map(book => (
           <BookCard key={book.BookID} book={book} />
         ))}
       </div>
     </div>
   );
+
 }

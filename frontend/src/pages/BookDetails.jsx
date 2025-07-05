@@ -8,6 +8,7 @@ export default function BookDetails() {
   const [comment, setComment] = useState('');
   const [rating, setRating] = useState(5);
   const [isAnonymous, setIsAnonymous] = useState(false);
+  const [sentimentScore, setSentimentScore] = useState('');
 
   useEffect(() => {
     // Fetch book details (optional)
@@ -35,6 +36,7 @@ export default function BookDetails() {
       rating,
       comment,
       isAnonymous,
+      sentimentScore: parseFloat(sentimentScore) 
     };
 
     try {
@@ -73,7 +75,7 @@ export default function BookDetails() {
           <div key={index} className="card">
             <p><strong>Rating:</strong> {review.Rating} ⭐</p>
             <p><strong>Comment:</strong> {review.Comment}</p>
-            <p><strong>By:</strong> {review.IsAnonymous ? 'Anonymous' : review.UserName || 'User'}</p>
+            <p><strong>By:</strong> {review.ReviewerName}</p>
             {review.SentimentScore && (
               <p><strong>Sentiment Score:</strong> {review.SentimentScore.toFixed(2)}</p>
             )}
@@ -102,6 +104,18 @@ export default function BookDetails() {
           <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows="4" cols="50" required />
         </label>
         <br />
+
+        <label>Sentiment Score (0 to 1):</label>
+<input
+  type="number"
+  step="0.01"
+  min="0"
+  max="1"
+  value={sentimentScore}
+  onChange={(e) => setSentimentScore(e.target.value)}
+  required
+/>
+<br/>
 
         <label>
           <input type="checkbox" checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} />
