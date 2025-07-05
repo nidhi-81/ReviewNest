@@ -9,27 +9,36 @@ export default function BookDetails() {
   const [rating, setRating] = useState(5);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [sentimentScore, setSentimentScore] = useState('');
+  const [userVotes, setUserVotes] = useState({});
 
-  useEffect(() => {
-    // Fetch book details (optional)
-    fetch(`http://localhost:5000/api/books`)
-      .then(res => res.json())
-      .then(data => {
-        const found = data.find(b => b.BookID == id);
-        if (found) setBook(found);
-      });
+   const token = localStorage.getItem('token');
+ useEffect(() => {
+  // Fetch book details
+  fetch(`http://localhost:5000/api/books`)
+    .then(res => res.json())
+    .then(data => {
+      const found = data.find(b => b.BookID == id);
+      if (found) setBook(found);
+    });
 
-    // Fetch reviews for this book
-    fetch(`http://localhost:5000/api/reviews/${id}`)
-      .then(res => res.json())
-      .then(data => setReviews(data))
-      .catch(err => console.error(err));
-  }, [id]);
+  // Fetch reviews with token
+  const token = localStorage.getItem('token');
+  fetch(`http://localhost:5000/api/reviews/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(res => res.json())
+    .then(data => setReviews(data))
+    .catch(err => console.error('Error fetching reviews:', err));
+}, [id]);
+
+
+  
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('token'); // if auth is implemented
 
     const reviewData = {
       bookId: parseInt(id),
@@ -60,6 +69,37 @@ export default function BookDetails() {
       console.error('Review post error:', err);
     }
   };
+  
+  const handleVote = async (reviewId, isLike) => {
+  try {
+    const token = localStorage.getItem('token');
+
+    const response = await fetch('http://localhost:5000/api/reviews/like', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({ reviewId, isLike })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to like/dislike review');
+    }
+
+    // ✅ update the UI: refetch reviews or optimistically update
+    const updatedReviews = reviews.map(r =>
+      r.ReviewID === reviewId ? { ...r, UserVote: isLike } : r
+    );
+    setReviews(updatedReviews);
+
+  } catch (err) {
+    console.error('Voting error:', err.message);
+  }
+};
+
+
+
 
   return (
     <div className="container">
@@ -79,6 +119,21 @@ export default function BookDetails() {
             {review.SentimentScore && (
               <p><strong>Sentiment Score:</strong> {review.SentimentScore.toFixed(2)}</p>
             )}
+
+            <div className="vote-buttons">
+      {review.UserVote === null || review.UserVote === undefined ? (
+  <>
+    <button onClick={() => handleVote(review.ReviewID, true)}>👍 Like</button>
+    <button onClick={() => handleVote(review.ReviewID, false)}>👎 Dislike</button>
+  </>
+) : (
+  <p style={{ color: '#888', marginTop: '8px' }}>
+    You {review.UserVote ? 'liked' : 'disliked'} this review.
+  </p>
+)}
+
+
+    </div>
           </div>
         ))
       ) : (
