@@ -9,43 +9,42 @@ export default function BookDetails() {
   const [rating, setRating] = useState(5);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [sentimentScore, setSentimentScore] = useState('');
-  const [userVotes, setUserVotes] = useState({});
-
-   const token = localStorage.getItem('token');
- useEffect(() => {
-  // Fetch book details
-  fetch(`http://localhost:5000/api/books`)
-    .then(res => res.json())
-    .then(data => {
-      const found = data.find(b => b.BookID == id);
-      if (found) setBook(found);
-    });
-
-  // Fetch reviews with token
   const token = localStorage.getItem('token');
-  fetch(`http://localhost:5000/api/reviews/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`
+
+
+  const fetchReviews = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/reviews/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      setReviews(data);
+    } catch (err) {
+      console.error('Error fetching reviews:', err);
     }
-  })
-    .then(res => res.json())
-    .then(data => setReviews(data))
-    .catch(err => console.error('Error fetching reviews:', err));
-}, [id]);
+  };
 
+  useEffect(() => {
+    
+    fetch(`http://localhost:5000/api/books`)
+      .then(res => res.json())
+      .then(data => {
+        const found = data.find(b => b.BookID == id);
+        if (found) setBook(found);
+      });
 
-  
+    fetchReviews();
+  }, [id]);
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
-
 
     const reviewData = {
       bookId: parseInt(id),
       rating,
       comment,
       isAnonymous,
-      sentimentScore: parseFloat(sentimentScore) 
+      sentimentScore: parseFloat(sentimentScore)
     };
 
     try {
@@ -53,59 +52,49 @@ export default function BookDetails() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token ? `Bearer ${token}` : '', // if needed
+          Authorization: token ? `Bearer ${token}` : ''
         },
         body: JSON.stringify(reviewData),
       });
 
       if (res.ok) {
-        const newReview = await res.json();
-        setReviews(prev => [...prev, newReview]);
+        await fetchReviews();
         setComment('');
         setRating(5);
         setIsAnonymous(false);
+        setSentimentScore('');
       }
     } catch (err) {
       console.error('Review post error:', err);
     }
   };
-  
+
   const handleVote = async (reviewId, isLike) => {
-  try {
-    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch('http://localhost:5000/api/reviews/like', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ reviewId, isLike })
+      });
 
-    const response = await fetch('http://localhost:5000/api/reviews/like', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({ reviewId, isLike })
-    });
+      if (!response.ok) {
+        throw new Error('Failed to like/dislike review');
+      }
 
-    if (!response.ok) {
-      throw new Error('Failed to like/dislike review');
+      await fetchReviews();
+    } catch (err) {
+      console.error('Voting error:', err.message);
     }
-
-    // ✅ update the UI: refetch reviews or optimistically update
-    const updatedReviews = reviews.map(r =>
-      r.ReviewID === reviewId ? { ...r, UserVote: isLike } : r
-    );
-    setReviews(updatedReviews);
-
-  } catch (err) {
-    console.error('Voting error:', err.message);
-  }
-};
-
-
-
+  };
 
   return (
     <div className="container">
       <h1>{book.Title}</h1>
       <p><strong>Author:</strong> {book.Author}</p>
-      <p>{book.Description}</p>
+      <p>{book.Detail}</p>
 
       <hr />
 
@@ -121,19 +110,18 @@ export default function BookDetails() {
             )}
 
             <div className="vote-buttons">
-      {review.UserVote === null || review.UserVote === undefined ? (
-  <>
-    <button onClick={() => handleVote(review.ReviewID, true)}>👍 Like</button>
-    <button onClick={() => handleVote(review.ReviewID, false)}>👎 Dislike</button>
-  </>
-) : (
-  <p style={{ color: '#888', marginTop: '8px' }}>
-    You {review.UserVote ? 'liked' : 'disliked'} this review.
-  </p>
-)}
-
-
-    </div>
+              <p>👍 {review.LikeCount} | 👎 {review.DislikeCount}</p>
+              {review.UserVote === null || review.UserVote === undefined ? (
+                <>
+                  <button onClick={() => handleVote(review.ReviewID, true)}>👍 Like</button>
+                  <button onClick={() => handleVote(review.ReviewID, false)}>👎 Dislike</button>
+                </>
+              ) : (
+                <p style={{ color: '#888', marginTop: '8px' }}>
+                  You {review.UserVote ? 'liked' : 'disliked'} this review.
+                </p>
+              )}
+            </div>
           </div>
         ))
       ) : (
@@ -146,7 +134,7 @@ export default function BookDetails() {
         <label>
           Rating:
           <select value={rating} onChange={(e) => setRating(e.target.value)}>
-            {[5,4,3,2,1].map(n => (
+            {[5, 4, 3, 2, 1].map(n => (
               <option key={n} value={n}>{n}</option>
             ))}
           </select>
@@ -161,16 +149,16 @@ export default function BookDetails() {
         <br />
 
         <label>Sentiment Score (0 to 1):</label>
-<input
-  type="number"
-  step="0.01"
-  min="0"
-  max="1"
-  value={sentimentScore}
-  onChange={(e) => setSentimentScore(e.target.value)}
-  required
-/>
-<br/>
+        <input
+          type="number"
+          step="0.01"
+          min="0"
+          max="1"
+          value={sentimentScore}
+          onChange={(e) => setSentimentScore(e.target.value)}
+          required
+        />
+        <br />
 
         <label>
           <input type="checkbox" checked={isAnonymous} onChange={(e) => setIsAnonymous(e.target.checked)} />

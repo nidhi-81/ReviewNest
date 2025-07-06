@@ -43,7 +43,7 @@
 .auth-container button {
   margin-top: 20px;
   padding: 12px;
-  background-color: #4CAF50;
+  background-color: #6a82fb;
   color: white;
   border: none;
   border-radius: 6px;
@@ -51,9 +51,7 @@
   font-size: 15px;
 }
 
-.auth-container button:hover {
-  background-color: #45a049;
-}
+
 
 .auth-container p {
   margin-top: 16px;

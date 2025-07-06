@@ -32,7 +32,9 @@ export default function Navbar() {
 
 
   <div className="navbar-right">
-    {isAuthenticated() && <span className="welcome-text">Welcome, {userName} 👋</span>}
+    {isAuthenticated() && <span className="welcome-text">
+  Welcome, <span className="username-highlight">{userName}</span>
+</span>}
     {isAuthenticated() ? (
       <>
         <Link to="/add-book">Add Book</Link>

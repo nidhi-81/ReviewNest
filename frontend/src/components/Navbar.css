@@ -1,25 +1,44 @@
 .navbar {
-  background-color: #333;
+  background: linear-gradient(90deg, #4f8cff 0%, #6a82fb 100%);
   color: #fff;
-  padding: 12px 30px;
+  padding: 14px 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 12px rgba(80, 120, 200, 0.10);
+  border-radius: 0 0 18px 18px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar-brand {
-  font-size: 22px;
-  font-weight: bold;
+  font-size: 26px;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  letter-spacing: 1px;
+  color: #fff;
+  transition: color 0.2s;
+}
+
+.navbar-brand:hover {
+  color: #ffe082;
+}
+
+.logo-icon {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.10));
 }
 
 .navbar-right {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 30px;
 }
 
 .navbar a,
@@ -28,22 +47,48 @@
   background: none;
   border: none;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 17px;
   text-decoration: none;
-  transition: color 0.2s;
+  padding: 8px 18px;
+  border-radius: 6px;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  font-weight: 500;
+  outline: none;
 }
 
-.logout-btn:hover,
-.navbar a:hover {
-  text-decoration: underline;
+.navbar a:hover,
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffe082;
+  box-shadow: 0 2px 8px rgba(80, 120, 200, 0.10);
+  text-decoration: none;
+}
+
+.logout-btn {
+  border: 1px solid #fff;
+  margin-left: 8px;
+}
+
+.logout-btn:hover {
+  border-color: #ffe082;
 }
 
 .welcome-text {
   font-weight: 500;
-  color: #eee;
+  color: #fffbe7;
+  margin-right: 10px;
+  font-size: 16px;
+  letter-spacing: 0.5px;
 }
-.logo-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
+
+.username-highlight {
+  font-weight: 800;
+  font-size: 1.15em;
+  color: #ffe082;
+  background: rgba(80, 120, 200, 0.10);
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  box-shadow: 0 1px 4px rgba(80, 120, 200, 0.08);
+  transition: background 0.2s, color 0.2s;
 }
