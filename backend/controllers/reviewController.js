@@ -1,6 +1,7 @@
 const { poolPromise, sql } = require('../config/db');
 
-// ➕ Add Review
+
+
 exports.addReview = async (req, res) => {
   const { bookId, rating, comment, isAnonymous, sentimentScore } = req.body;
   const userId = req.user.userId; 
@@ -24,11 +25,13 @@ exports.addReview = async (req, res) => {
   }
 };
 
-// 📖 Get Reviews by Book ID
-// 📖 Get Reviews by Book ID with user votes
+
 exports.getReviewsByBook = async (req, res) => {
   const { bookId } = req.params;
-  const userId = req.user.userId; // get user from JWT
+  if (isNaN(bookId)) {
+  return res.status(400).json({ error: 'Invalid Book ID' });
+}
+  const userId = req.user.userId; 
 
   try {
     const pool = await poolPromise;
@@ -60,5 +63,46 @@ exports.likeOrDislikeReview = async (req, res) => {
   } catch (err) {
     console.error('Like/Dislike Error:', err);
     res.status(500).json({ error: 'Failed to like/dislike review' });
+  }
+};
+
+exports.deleteReview = async (req, res) => {
+  const { reviewId } = req.params;
+
+  try {
+    const pool = await poolPromise;
+    await pool.request()
+      .input('ReviewID', sql.Int, reviewId)
+      .execute('sp_DeleteReview'); 
+
+    res.status(200).json({ message: 'Review deleted successfully' });
+  } catch (err) {
+    console.error('Delete Review Error:', err.message);
+    res.status(500).json({ error: 'Failed to delete review' });
+  }
+};
+
+exports.getAllReviews = async (req, res) => {
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request().query(`
+      SELECT 
+        r.*, 
+        u.Name, 
+        b.Title,
+        ISNULL(SUM(CASE WHEN v.IsLike = 1 THEN 1 ELSE 0 END), 0) AS LikeCount,
+        ISNULL(SUM(CASE WHEN v.IsLike = 0 THEN 1 ELSE 0 END), 0) AS DislikeCount
+      FROM Reviews r
+      JOIN Users u ON r.UserID = u.UserID
+      JOIN Books b ON r.BookID = b.BookID
+      LEFT JOIN ReviewLikes v ON r.ReviewID = v.ReviewID
+      GROUP BY r.ReviewID, r.BookID, r.UserID, r.Rating, r.Comment, r.IsAnonymous, r.SentimentScore, r.CreatedAt,
+               u.Name, b.Title
+    `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error('Get all reviews error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch reviews' });
   }
 };

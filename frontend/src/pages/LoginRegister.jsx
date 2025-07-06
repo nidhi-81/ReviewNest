@@ -2,6 +2,7 @@
 import '../auth.css'
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {jwtDecode} from 'jwt-decode';
 
 export default function LoginRegister() {
   const navigate = useNavigate();
@@ -36,8 +37,15 @@ export default function LoginRegister() {
 
       if (response.ok) {
         if (isLogin) {
-          localStorage.setItem('token', data.token);
+        localStorage.setItem('token', data.token);
+        const decoded = jwtDecode(data.token);
+        const role = decoded.role;
+        if (role === 'admin') {
+          navigate('/admin-dashboard');
+        } else {
           navigate('/');
+        }
+
         } else {
           alert('Registration successful. Please log in.');
           setIsLogin(true);

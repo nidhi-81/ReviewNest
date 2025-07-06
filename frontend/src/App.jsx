@@ -5,6 +5,7 @@ import BookDetails from './pages/BookDetails';
 import LoginRegister from './pages/LoginRegister';
 import ProtectedRoute from './components/ProtectedRoute';
 import AddBook from './pages/AddBook';
+import AdminDashboard from './pages/AdminDashboard'; 
 
 function App() {
   return (
@@ -20,6 +21,13 @@ function App() {
         } />
 
         <Route path="/add-book" element={<ProtectedRoute><AddBook /></ProtectedRoute>} />
+
+        
+        <Route path="/admin-dashboard" element={
+          <ProtectedRoute requiredRole="admin">
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
       </Routes>
     </Router>
   );

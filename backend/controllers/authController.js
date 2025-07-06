@@ -40,9 +40,9 @@ exports.login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ error: 'Invalid email or password' });
 
     const token = jwt.sign(
-      { userId: user.UserID, name: user.Name, isAnonymous: user.IsAnonymous },
+      { userId: user.UserID, name: user.Name, isAnonymous: user.IsAnonymous, role: user.Role  },
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }
+      { expiresIn: '2h' }
     );
 
     res.json({ token });
