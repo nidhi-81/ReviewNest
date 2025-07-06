@@ -16,7 +16,7 @@ ReviewNest is a full-stack web app that allows users to explore books, read revi
   - Prevents multiple votes per review per user.
     
 
-### 📊 Admin Dashboard
+### Admin Dashboard
 - **Analytics Overview**:
   - Total number of reviews
   - Unique users
@@ -29,7 +29,7 @@ ReviewNest is a full-stack web app that allows users to explore books, read revi
 
 ---
 
-## 🧰 Tech Stack
+## Tech Stack
 
 | Layer        | Technology         |
 |--------------|--------------------|
